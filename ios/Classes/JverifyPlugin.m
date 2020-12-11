@@ -1,7 +1,5 @@
 #import "JverifyPlugin.h"
 #import "JVERIFICATIONService.h"
-// 如果需要使用 idfa 功能所需要引入的头文件（可选）
-#import <AdSupport/AdSupport.h>
 #define UIColorFromRGB(rgbValue)  ([UIColor colorWithRed:((float)((rgbValue & 0xFF0000) >> 16))/255.0 green:((float)((rgbValue & 0xFF00) >> 8))/255.0 blue:((float)(rgbValue & 0xFF))/255.0 alpha:1.0])
 
 
@@ -116,7 +114,6 @@ NSObject<FlutterPluginRegistrar>* _jv_registrar;
     NSDictionary *arguments = [call arguments];
     NSString *appKey = arguments[@"appKey"];
     NSString *channel = arguments[@"channel"];
-    NSNumber *useIDFA = arguments[@"useIDFA"];
     NSNumber *timeout = arguments[@"timeout"];
     
     JVAuthConfig *config = [[JVAuthConfig alloc] init];
@@ -131,14 +128,6 @@ NSObject<FlutterPluginRegistrar>* _jv_registrar;
         timeout = @(10000);
     }
     config.timeout = [timeout longLongValue];
-    
-    NSString *idfaStr = NULL;
-    if(![useIDFA isKindOfClass:[NSNull class]]){
-        if([useIDFA boolValue]){
-            idfaStr = [[[ASIdentifierManager sharedManager] advertisingIdentifier] UUIDString];
-            config.advertisingId = idfaStr;
-        }
-    }
     
     __weak typeof(self) weakself = self;
     config.authBlock = ^(NSDictionary *result) {
